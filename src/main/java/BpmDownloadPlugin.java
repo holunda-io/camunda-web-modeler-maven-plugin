@@ -23,28 +23,20 @@ import java.util.UUID;
 @Mojo(name = "bpmn-download", defaultPhase = LifecyclePhase.COMPILE)
 public class BpmDownloadPlugin extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     MavenProject project;
     @Parameter
     private String path;
 
-    @Parameter(property = "client-id", readonly = true, required = true)
+    @Parameter(property = "client-id", required = true)
     private String clientId;
-    @Parameter(property = "client-secret", readonly = true, required = true)
+    @Parameter(property = "client-secret", required = true)
     private String clientSecret;
 
-    @Parameter(property = "documents", readonly = true, required = true)
+    @Parameter(property = "documents", required = true)
     private List<ModelerDocument> documents;
 
-    private final CamundaWebModelerClient client;
-
-    public BpmDownloadPlugin() {
-        this.client = CamundaWebModelerClientBuilder.builder()
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .build();
-        ;
-    }
+    private CamundaWebModelerClient client;
 
 
     @Override
@@ -54,6 +46,11 @@ public class BpmDownloadPlugin extends AbstractMojo {
             path = project.getBasedir() + "/src/main/resources";
         }
         getLog().info("Files will be stored under " + path);
+
+        this.client = CamundaWebModelerClientBuilder.builder()
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .build();
 
 
         documents.forEach(it -> {
