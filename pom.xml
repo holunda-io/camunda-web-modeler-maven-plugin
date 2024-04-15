@@ -11,8 +11,10 @@
     <description>Plugin to download documents from Camunda Web Modeler via REST-Api</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <version.java>${java.version}</version.java>
         <junit.version>5.9.2</junit.version>
     </properties>
 
