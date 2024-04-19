@@ -4,20 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>io.toolisticon.maven.parent</groupId>
+        <artifactId>maven-parent-kotlin-base</artifactId>
+        <version>2024.4.0</version>
+        <relativePath/>
+    </parent>
+
     <groupId>io.holunda</groupId>
-    <artifactId>camunda-8-webmodeler-maven-plugin</artifactId>
+    <artifactId>camunda-web-modeler-maven-plugin</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>camunda-8-webmodeler-maven-plugin</name>
+    <name>${project.artifactId}</name>
+    <description>Plugin to download documents from Camunda Web Modeler via REST API</description>
+    <url>https://github.com/holunda-io/camunda-web-modeler-maven-plugin</url>
     <packaging>maven-plugin</packaging>
-    <description>Plugin to download documents from Camunda Web Modeler via REST-Api</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <kotlin.version>1.9.23</kotlin.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <version.java>${java.version}</version.java>
         <junit.version>5.9.2</junit.version>
     </properties>
 
@@ -55,8 +57,22 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+        <defaultGoal>clean jacoco:prepare-agent package</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.amashchenko.maven.plugin</groupId>
+                    <artifactId>gitflow-maven-plugin</artifactId>
+                    <configuration>
+                        <gitFlowConfig>
+                            <productionBranch>main</productionBranch>
+                        </gitFlowConfig>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <!-- Generate META-INF for Plugins -->
@@ -73,25 +89,71 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+              <groupId>org.jetbrains.kotlin</groupId>
+              <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:holunda-io/camunda-web-modeler-maven-plugin.git</connection>
+    <url>scm:git:git@github.com:holunda-io/camunda-web-modeler-maven-plugin.git</url>
+    <developerConnection>scm:git:git@github.com:holunda-io/camunda-web-modeler-maven-plugin.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <developers>
+    <developer>
+      <id>MichaelVonB</id>
+      <name>Michael von Bargen</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Holisticon AG</organization>
+      <organizationUrl>https://holisticon.de</organizationUrl>
+    </developer>
+    <developer>
+      <id>christian-maschmann</id>
+      <name>Christian Maschmann</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Holisticon AG</organization>
+      <organizationUrl>https://holisticon.de</organizationUrl>
+    </developer>
+  </developers>
 </project>
