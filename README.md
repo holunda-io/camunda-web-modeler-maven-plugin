@@ -1,4 +1,4 @@
-# Camunda-8-Webmodeler-Maven Plugin
+# Camunda 8 Web Modeler Maven Plugin
 
 This plugin provides an easy to use way of downloading files from the Camunda 8 Web Modeler via REST-Api
 into your source code for version control.
@@ -11,8 +11,8 @@ into your source code for version control.
     <plugins>
         <plugin>
             <groupId>io.holunda</groupId>
-            <artifactId>camunda-8-webmodeler-maven-plugin</artifactId>
-            <version>${web-modeler-plugin.version}</version>
+            <artifactId>camunda-web-modeler-maven-plugin</artifactId>
+            <version>${camunda-web-modeler-maven-plugin.version}</version>
         </plugin>
     </plugins>
 </build>
@@ -33,7 +33,7 @@ Either execute in your maven lifecycle (defaultPhase = COMPILE)
 
 or via Command
 ```
-mvn io.holunda:camunda-8-webmodeler-maven-plugin:your-version:bpmn-download
+mvn io.holunda:camunda-web-modeler-maven-plugin:your-version:bpmn-download
 ```
 
 
