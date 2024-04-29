@@ -77,6 +77,9 @@ class BpmDownloadPlugin: AbstractMojo() {
         fileSearchDto.setFilter(fileMetadataSearch)
 
         val fileSearchResponse: PubSearchResultDtoFileMetadataDto = client!!.searchFiles(fileSearchDto)
+        if (fileSearchResponse.total != 1) {
+            throw IllegalStateException("file search for $fileMetadataSearch returned ${fileSearchResponse.total} results, should be one")
+        }
         return Optional.ofNullable(fileSearchResponse.getItems())
             .map { items -> items.stream().findFirst().map(FileMetadataDto::getId) }
             .flatMap { file -> file }
@@ -109,13 +112,10 @@ class BpmDownloadPlugin: AbstractMojo() {
     }
 
     private fun downloadFile(file: DownloadFile) {
-        try {
-            Files.writeString(Path.of(path.toString() + "/" + file.name), file.content)
+        path?.let {
+            Files.writeString(Path.of(it, file.name), file.content)
             getLog().info("Created file " + file.name)
-        } catch (e: IOException) {
-            getLog().warn("Could not save file for " + file.name)
-            throw RuntimeException(e)
-        }
+        } ?: throw IllegalArgumentException("path not set in plugin configuration")
     }
 }
 
