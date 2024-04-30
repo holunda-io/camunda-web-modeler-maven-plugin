@@ -22,32 +22,44 @@ class WebModelerClient(
         .build()
 
     override fun download(model: Model, targetFolder: Path) {
-        val fileId: String? = getFileId(model.name)
+        val projectId = getProjectId(model.project)
+        val fileId: String? = getFileId(model.name, projectId)
         if (fileId != null) {
-            val downloadFile =
-                model.milestone?.let { milestone -> getMilestoneFile(fileId, milestone) }
-                    ?: run {
-                        val dto: FileDto = client.getFile(UUID.fromString(fileId))
-                        Objects.requireNonNull(dto.metadata, "metadata of file '$fileId' is null")
-                        DownloadFile(dto.metadata.simplePath, dto.content)
-                    }
-            downloadFile(downloadFile, targetFolder)
+            val downloadFile = if (model.milestone != null) {
+                getMilestoneFile(fileId, model.milestone)
+            } else {
+                getFile(fileId)
+            }
+            saveFile(downloadFile, targetFolder)
         } else {
-            log.warn("Could not find file for " + model.name)
+            log.warn("Could not find file for $model")
         }
 
     }
 
-    private fun getFileId(fileName: String): String? {
+    private fun getProjectId(projectName: String?): String? {
+        return projectName?.let {
+            val projectSearchDto = PubSearchDtoProjectMetadataDto().apply {
+                this.filter = ProjectMetadataDto().apply {
+                    this.name = projectName
+                }
+            }
+
+            val searchResult = client.searchProjects(projectSearchDto)
+            require(searchResult.total == 1) { "project search for $projectSearchDto returned ${searchResult.total} results, should be one" }
+            return searchResult.items.first().id
+        }
+    }
+
+    private fun getFileId(fileName: String, projectId: String?): String? {
         val fileMetadataSearch = FileMetadataDto()
         fileMetadataSearch.name = fileName
+        fileMetadataSearch.projectId = projectId
         val fileSearchDto = PubSearchDtoFileMetadataDto()
         fileSearchDto.filter = fileMetadataSearch
 
         val fileSearchResponse: PubSearchResultDtoFileMetadataDto = client.searchFiles(fileSearchDto)
-        if (fileSearchResponse.total != 1) {
-            throw IllegalStateException("file search for $fileMetadataSearch returned ${fileSearchResponse.total} results, should be one")
-        }
+        require(fileSearchResponse.total == 1) { "file search for $fileMetadataSearch returned ${fileSearchResponse.total} results, should be one" }
         return fileSearchResponse.items.first().id
     }
 
@@ -62,14 +74,20 @@ class WebModelerClient(
         val mileStoneId: String = client.searchMilestones(pubSearchDtoMilestoneMetadataDto).items.first().id
         val milestone: MilestoneDto = client.getMilestone(UUID.fromString(mileStoneId))
         val dto: FileDto = client.getFile(UUID.fromString(fileId))
-        Objects.requireNonNull(dto.metadata, "metadata of file '$fileId' and milestone '$milestoneName' is null")
+        requireNotNull(dto.metadata) { "metadata of file '$fileId' and milestone '$milestoneName' is null" }
         return DownloadFile(
             dto.metadata.simplePath,
             milestone.content
         )
     }
 
-    private fun downloadFile(file: DownloadFile, targetFolder: Path) {
+    private fun getFile(fileId: String): DownloadFile {
+        val dto: FileDto = client.getFile(UUID.fromString(fileId))
+        requireNotNull(dto.metadata) { "metadata of file '$fileId' is null" }
+        return DownloadFile(dto.metadata.simplePath, dto.content)
+    }
+
+    private fun saveFile(file: DownloadFile, targetFolder: Path) {
         Files.writeString(targetFolder.resolve(file.name), file.content)
         log.info("Saved '${file.name}'")
     }

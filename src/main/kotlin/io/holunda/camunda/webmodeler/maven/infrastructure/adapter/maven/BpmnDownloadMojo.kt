@@ -36,7 +36,7 @@ class BpmnDownloadMojo: AbstractMojo() {
 
         log.info("Starting to download files. They will be stored under '$targetFolder'")
 
-        documents.map { Model(it.name, it.mileStone) }
+        documents.map { Model(it.name, it.mileStone, it.project) }
             .forEach { downloadModelsInPort.downloadModel(it, targetFolder) }
     }
 
