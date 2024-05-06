@@ -13,7 +13,7 @@
 
     <groupId>io.holunda</groupId>
     <artifactId>camunda-web-modeler-maven-plugin</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Plugin to download documents from Camunda Web Modeler via REST API</description>
     <url>https://github.com/holunda-io/camunda-web-modeler-maven-plugin</url>
