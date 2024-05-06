@@ -9,6 +9,7 @@ import org.openapitools.client.model.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
+import kotlin.io.path.createDirectories
 
 class WebModelerClient(
     clientId: String,
@@ -89,7 +90,9 @@ class WebModelerClient(
 
     private fun saveFile(model: Model, file: DownloadFile, targetFolder: Path) {
         val filename = model.targetPath ?: file.name
-        Files.writeString(targetFolder.resolve(filename), file.content)
+        val targetPath = targetFolder.resolve(filename)
+        targetPath.parent.createDirectories()
+        Files.writeString(targetPath, file.content)
         log.info("Saved '$filename'")
     }
 
