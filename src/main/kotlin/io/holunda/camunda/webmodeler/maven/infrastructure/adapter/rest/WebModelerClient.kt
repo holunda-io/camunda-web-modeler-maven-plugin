@@ -30,7 +30,7 @@ class WebModelerClient(
             } else {
                 getFile(fileId)
             }
-            saveFile(downloadFile, targetFolder)
+            saveFile(model, downloadFile, targetFolder)
         } else {
             log.warn("Could not find file for $model")
         }
@@ -87,9 +87,10 @@ class WebModelerClient(
         return DownloadFile(dto.metadata.simplePath, dto.content)
     }
 
-    private fun saveFile(file: DownloadFile, targetFolder: Path) {
-        Files.writeString(targetFolder.resolve(file.name), file.content)
-        log.info("Saved '${file.name}'")
+    private fun saveFile(model: Model, file: DownloadFile, targetFolder: Path) {
+        val filename = model.targetPath ?: file.name
+        Files.writeString(targetFolder.resolve(filename), file.content)
+        log.info("Saved '$filename'")
     }
 
 }
