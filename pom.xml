@@ -24,7 +24,7 @@
         <maven-project.version>2.2.1</maven-project.version>
         <maven-plugin-annotations.version>3.13.0</maven-plugin-annotations.version>
         <camunda-web-modeler-rest-client.version>0.1.0</camunda-web-modeler-rest-client.version>
-        <maven-plugin-plugin.version>3.13.0</maven-plugin-plugin.version>
+        <maven-plugin-plugin.version>3.13.1</maven-plugin-plugin.version>
     </properties>
 
     <dependencies>
